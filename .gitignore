@@ -7,8 +7,6 @@
 .env
 statistics.json
 
-*.sln
-
 # User-specific files
 *.rsuser
 *.suo
