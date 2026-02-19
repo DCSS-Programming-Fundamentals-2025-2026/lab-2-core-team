@@ -6,24 +6,24 @@ namespace UnitTest;
 public class StatisticsManagerTests
 {
     private StatisticsManager _statisticsManager;
-    private const string TestFilePath = "statistics.json";
+    private const string _testFilePath = "statistics.json";
 
     [SetUp]
     public void Setup()
     {
         _statisticsManager = new StatisticsManager();
-        if (File.Exists(TestFilePath))
+        if (File.Exists(_testFilePath))
         {
-            File.Delete(TestFilePath);
+            File.Delete(_testFilePath);
         }
     }
 
     [TearDown]
     public void TearDown()
     {
-        if (File.Exists(TestFilePath))
+        if (File.Exists(_testFilePath))
         {
-            File.Delete(TestFilePath);
+            File.Delete(_testFilePath);
         }
     }
 
@@ -47,5 +47,17 @@ public class StatisticsManagerTests
         Assert.That(loadedStats.Count, Is.EqualTo(1));
         Assert.That(loadedStats[0].PlayerOneName, Is.EqualTo("Player1"));
         Assert.That(loadedStats[0].XWinsCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void StatisticsManagerTest3()
+    {
+        var manager = new StatisticsManager();
+        File.WriteAllText(_testFilePath, "test data");
+        
+        manager.DeleteStatistics();
+
+        bool fileExists = File.Exists(_testFilePath);
+        Assert.That(fileExists, Is.False);
     }
 }

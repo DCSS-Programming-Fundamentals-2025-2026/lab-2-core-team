@@ -1,9 +1,10 @@
 using Lab.Contracts;
 using Lab.Domain.Core.Player;
+using Lab.Domain.Core.StatisticsLogic;
 
 namespace Lab.UI;
 
-class InputHandler
+public class InputHandler
 {
     public int SelectCell(char[] board, ConsoleRender renderer, int lastSelectedCell, int round, PlayerBase player1, PlayerBase player2, int[] score)
     {
@@ -101,35 +102,22 @@ class InputHandler
         }
     }
 
-    public bool ClearStatistics()
+    public bool StatisticsMenu(ref bool toggle)
     {
+        StatisticsManager statisticsManager = new StatisticsManager();
         while (true)
         {
             ConsoleKey keyInfo = Console.ReadKey(true).Key;
-            if (keyInfo == ConsoleKey.Enter)
+            switch (keyInfo)
             {
-                return true;
-            }
-            if (keyInfo == ConsoleKey.Escape)
-            {
-                return false;
-            }
-        }
-    }
-
-    public bool SortStatisticsToggle()
-    {
-        bool toggle = true;
-        while (true)
-        {
-            ConsoleKey keyInfo = Console.ReadKey(true).Key;
-            if (keyInfo == ConsoleKey.Spacebar)
-            {
-                toggle = !toggle;
-            }
-            else if (keyInfo == ConsoleKey.Enter)
-            {
-                return toggle;
+                case ConsoleKey.Enter:
+                    statisticsManager.DeleteStatistics();
+                    return true;
+                case ConsoleKey.Escape:
+                    return false;
+                case ConsoleKey.Spacebar:
+                    toggle = !toggle;
+                    return true;
             }
         }
     }

@@ -7,14 +7,14 @@ using Contracts;
 
 public class ConsoleRender : IBoardRenderer
 {
-    private const int OffsetX = 10;
+    private const int OffsetX = 16;
     private const int OffsetY = 5;
     private const int CellWidth = 5;
     public void DrawGameScreen(char[] board, int selectedIndex, int roundNumber, PlayerBase player1, PlayerBase player2, int[] score)
     {
         Console.Clear();
 
-        Console.SetCursorPosition(15, 0);
+        Console.SetCursorPosition(20, 0);
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write($"Round {roundNumber}");
         Console.ResetColor();
@@ -106,44 +106,31 @@ public class ConsoleRender : IBoardRenderer
         StatisticsManager statisticsManager = new StatisticsManager();
         List<StatisticsObject>? allGamesStatistics = statisticsManager.DeserializeStatistics();
 
-        if (allGamesStatistics is null)
+        bool toggle = true;
+        bool stayInMenu = true;
+        while (stayInMenu)
         {
             Console.Clear();
-            Console.WriteLine("No games played yet.");
-            Console.WriteLine("\n\nPress any key to return to the menu...");
-            Console.ReadKey();
-            return;
-        }
-        
-        Console.Clear();
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("      Match History");
-        Console.ResetColor();
-        
-        bool toggle = inputHandler.SortStatisticsToggle();
-        ShowStatisticsSortMenu(toggle);
-        if (toggle)
-        {
-            for (int i = allGamesStatistics.Count - 1; i >= 0 ; i--)
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("                     Match History");
+            Console.ResetColor();
+
+            if (allGamesStatistics is null)
             {
-                statisticsManager.DrawMatch(allGamesStatistics[i]);
+                Console.Clear();
+                Console.WriteLine("No games played yet.");
+                Console.WriteLine("\n\nPress any key to return to the menu...");
+                Console.ReadKey();
+                return;
             }
-        }
-        else
-        {
-            for (int i = 0; i < allGamesStatistics.Count ; i++)
-            {
-                statisticsManager.DrawMatch(allGamesStatistics[i]);
-            }
-        }
-        
-        
-        
-        ShowStatisticsMenu();
-        bool userInput = inputHandler.ClearStatistics();
-        if (userInput)
-        {
-            statisticsManager.DeleteStatistics();
+
+            DrawSortMatch(allGamesStatistics, toggle);
+            
+            ShowStatisticsMenu();
+            ShowStatisticsSortMenu(toggle);
+            stayInMenu = inputHandler.StatisticsMenu(ref toggle);
+
+            allGamesStatistics = statisticsManager.DeserializeStatistics();
         }
     }
 
@@ -197,12 +184,10 @@ public class ConsoleRender : IBoardRenderer
 
     public void ShowStatisticsMenu()
     {
-        Console.SetCursorPosition(0, OffsetY + 7);
         Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine("[Enter] - Clear history");
+        Console.Write("\n[Enter] - Clear history         ");
         Console.ResetColor();
-
-        Console.SetCursorPosition(25, OffsetY + 7);
+        
         Console.ForegroundColor = ConsoleColor.DarkYellow;
         Console.WriteLine("[Esc] - Return to menu");
         Console.ResetColor();
@@ -210,17 +195,51 @@ public class ConsoleRender : IBoardRenderer
 
     public void ShowStatisticsSortMenu(bool toggle)
     {
-        Console.SetCursorPosition(25, OffsetY + 9);
         Console.ForegroundColor = ConsoleColor.DarkMagenta;
         if (toggle)
         {
-            Console.WriteLine("[Spacebar] - Sort by newest");
+            Console.WriteLine("\n[Spacebar] - Sort by newest");
         }
         else
         {
-            Console.WriteLine("[Enter] - Sort by oldest");
+            Console.WriteLine("\n[Spacebar] - Sort by oldest");
         }
         Console.ResetColor();
+    }
+
+    public void DrawSortMatch(List<StatisticsObject> allGamesStatistics, bool sortNewestFirst)
+    {
+        if (sortNewestFirst)
+        {
+            for (int i = allGamesStatistics.Count - 1; i >= 0 ; i--)
+            {
+                DrawMatch(allGamesStatistics[i]);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < allGamesStatistics.Count ; i++)
+            {
+                DrawMatch(allGamesStatistics[i]);
+            }
+        }
+    }
+    
+    public void DrawMatch(StatisticsObject match)
+    {
+        Console.Write($"\n{match.PlayerOneName} (");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Write('X');
+        Console.ResetColor();
+        Console.WriteLine($"): {match.XWinsCount}");
+
+        Console.Write($"{match.PlayerTwoName} (");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write('O');
+        Console.ResetColor();
+        Console.WriteLine($"): {match.OWinsCount}");
+
+        Console.WriteLine($"Draws: {match.DrawsCount}");
     }
 }
 

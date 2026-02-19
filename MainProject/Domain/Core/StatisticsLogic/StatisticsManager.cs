@@ -13,24 +13,7 @@ public class StatisticsManager
             sw.WriteLine(jsonString);
         }
     }
-
-    public void DrawMatch(StatisticsObject match)
-    {
-        Console.Write($"\n{match.PlayerOneName} (");
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write('X');
-        Console.ResetColor();
-        Console.WriteLine($"): {match.XWinsCount}");
-
-        Console.Write($"{match.PlayerTwoName} (");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write('O');
-        Console.ResetColor();
-        Console.WriteLine($"): {match.OWinsCount}");
-
-        Console.WriteLine($"Draws: {match.DrawsCount}");
-    }
-
+    
     public List<StatisticsObject>? DeserializeStatistics()
     {
         List<StatisticsObject> statisticsObjects = new List<StatisticsObject>();
