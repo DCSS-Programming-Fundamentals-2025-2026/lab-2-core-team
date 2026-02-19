@@ -108,6 +108,7 @@ public class ConsoleRender : IBoardRenderer
 
         if (allGamesStatistics is null)
         {
+            Console.Clear();
             Console.WriteLine("No games played yet.");
             Console.WriteLine("\n\nPress any key to return to the menu...");
             Console.ReadKey();
@@ -123,8 +124,6 @@ public class ConsoleRender : IBoardRenderer
         {
             StatisticsObject match = allGamesStatistics[i];
             
-            
-
             Console.Write($"\n{match.PlayerOneName} (");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write('X');
@@ -145,6 +144,17 @@ public class ConsoleRender : IBoardRenderer
         if (userInput)
         {
             statisticsManager.DeleteStatistics();
+        }
+
+        bool toggle = inputHandler.SortStatisticsToggle();
+        ShowStatisticsSortMenu(toggle);
+        if (toggle)
+        {
+            //SortByNew
+        }
+        else
+        {
+            //SrotByOld
         }
     }
 
@@ -206,6 +216,21 @@ public class ConsoleRender : IBoardRenderer
         Console.SetCursorPosition(25, OffsetY + 7);
         Console.ForegroundColor = ConsoleColor.DarkYellow;
         Console.WriteLine("[Esc] - Return to menu");
+        Console.ResetColor();
+    }
+
+    public void ShowStatisticsSortMenu(bool toggle)
+    {
+        Console.SetCursorPosition(25, OffsetY + 9);
+        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+        if (toggle)
+        {
+            Console.WriteLine("[Spacebar] - Sort by newest");
+        }
+        else
+        {
+            Console.WriteLine("[Spacebar] - Sort by oldest");
+        }
         Console.ResetColor();
     }
 }

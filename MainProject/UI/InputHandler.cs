@@ -116,4 +116,21 @@ class InputHandler
             }
         }
     }
+
+    public bool SortStatisticsToggle()
+    {
+        bool toggle = true;
+        while (true)
+        {
+            ConsoleKey keyInfo = Console.ReadKey(true).Key;
+            if (keyInfo == ConsoleKey.Spacebar)
+            {
+                toggle = !toggle;
+            }
+            else if (keyInfo == ConsoleKey.Spacebar)
+            {
+                return toggle;
+            }
+        }
+    }
 }
