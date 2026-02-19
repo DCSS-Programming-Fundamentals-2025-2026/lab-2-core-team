@@ -127,7 +127,7 @@ class InputHandler
             {
                 toggle = !toggle;
             }
-            else if (keyInfo == ConsoleKey.Spacebar)
+            else if (keyInfo == ConsoleKey.Enter)
             {
                 return toggle;
             }

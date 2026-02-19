@@ -120,41 +120,30 @@ public class ConsoleRender : IBoardRenderer
         Console.WriteLine("      Match History");
         Console.ResetColor();
         
-        for (int i = allGamesStatistics.Count - 1; i >= 0 ; i--)
+        bool toggle = inputHandler.SortStatisticsToggle();
+        ShowStatisticsSortMenu(toggle);
+        if (toggle)
         {
-            StatisticsObject match = allGamesStatistics[i];
-            
-            Console.Write($"\n{match.PlayerOneName} (");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write('X');
-            Console.ResetColor();
-            Console.WriteLine($"): {match.XWinsCount}");
-
-            Console.Write($"{match.PlayerTwoName} (");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write('O');
-            Console.ResetColor();
-            Console.WriteLine($"): {match.OWinsCount}");
-
-            Console.WriteLine($"Draws: {match.DrawsCount}");
+            for (int i = allGamesStatistics.Count - 1; i >= 0 ; i--)
+            {
+                statisticsManager.DrawMatch(allGamesStatistics[i]);
+            }
         }
+        else
+        {
+            for (int i = 0; i < allGamesStatistics.Count ; i++)
+            {
+                statisticsManager.DrawMatch(allGamesStatistics[i]);
+            }
+        }
+        
+        
         
         ShowStatisticsMenu();
         bool userInput = inputHandler.ClearStatistics();
         if (userInput)
         {
             statisticsManager.DeleteStatistics();
-        }
-
-        bool toggle = inputHandler.SortStatisticsToggle();
-        ShowStatisticsSortMenu(toggle);
-        if (toggle)
-        {
-            //SortByNew
-        }
-        else
-        {
-            //SrotByOld
         }
     }
 
@@ -229,7 +218,7 @@ public class ConsoleRender : IBoardRenderer
         }
         else
         {
-            Console.WriteLine("[Spacebar] - Sort by oldest");
+            Console.WriteLine("[Enter] - Sort by oldest");
         }
         Console.ResetColor();
     }
