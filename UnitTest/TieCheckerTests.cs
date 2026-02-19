@@ -25,7 +25,7 @@ public class TieCheckerTests
 
         bool result = _tieChecker.CheckForTie(board);
         
-        Assert.That(result, Is.True);
+        Assert.That(result, Is.EqualTo(true));
     }
     
     [Test]

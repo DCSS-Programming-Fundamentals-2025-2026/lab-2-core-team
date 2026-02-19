@@ -1,4 +1,5 @@
 using Lab.Domain.Core.StatisticsLogic;
+using Lab.UI;
 
 namespace UnitTest;
 
@@ -52,12 +53,51 @@ public class StatisticsManagerTests
     [Test]
     public void StatisticsManagerTest3()
     {
-        var manager = new StatisticsManager();
         File.WriteAllText(_testFilePath, "test data");
         
-        manager.DeleteStatistics();
+        _statisticsManager.DeleteStatistics();
 
         bool fileExists = File.Exists(_testFilePath);
         Assert.That(fileExists, Is.False);
+    }
+    
+    [Test]
+    public void StatisticsManagerTest4()
+    {
+        ConsoleRender consoleRender = new ConsoleRender();
+        File.WriteAllText(_testFilePath, "{\"XWinsCount\":1,\"OWinsCount\":1,\"DrawsCount\":1,\"PlayerOneName\":\"Batman\",\"PlayerTwoName\":\"Serhii\"}\n{\"XWinsCount\":0,\"OWinsCount\":1,\"DrawsCount\":0,\"PlayerOneName\":\"wqrewt\",\"PlayerTwoName\":\"asafds\"}\n{\"XWinsCount\":1,\"OWinsCount\":0,\"DrawsCount\":0,\"PlayerOneName\":\"qweqeresdsfs\",\"PlayerTwoName\":\"ththh\"}");
+        
+        List<StatisticsObject>? list = _statisticsManager.DeserializeStatistics();
+
+        if (list is null)
+        {
+            Assert.Fail();
+            return;
+        }
+        
+        List<StatisticsObject> processedList = consoleRender.DrawSortMatch(list, true);
+        
+        
+        Assert.That(processedList[0].PlayerOneName, Is.EqualTo("qweqeresdsfs"));
+    }
+    
+    [Test]
+    public void StatisticsManagerTest5()
+    {
+        ConsoleRender consoleRender = new ConsoleRender();
+        File.WriteAllText(_testFilePath, "{\"XWinsCount\":1,\"OWinsCount\":1,\"DrawsCount\":1,\"PlayerOneName\":\"Batman\",\"PlayerTwoName\":\"Serhii\"}\n{\"XWinsCount\":0,\"OWinsCount\":1,\"DrawsCount\":0,\"PlayerOneName\":\"wqrewt\",\"PlayerTwoName\":\"asafds\"}\n{\"XWinsCount\":1,\"OWinsCount\":0,\"DrawsCount\":0,\"PlayerOneName\":\"qweqeresdsfs\",\"PlayerTwoName\":\"ththh\"}");
+        
+        List<StatisticsObject>? list = _statisticsManager.DeserializeStatistics();
+
+        if (list is null)
+        {
+            Assert.Fail();
+            return;
+        }
+        
+        List<StatisticsObject> processedList = consoleRender.DrawSortMatch(list, false);
+        
+        
+        Assert.That(processedList[0].PlayerOneName, Is.EqualTo("Batman"));
     }
 }

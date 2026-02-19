@@ -207,7 +207,7 @@ public class ConsoleRender : IBoardRenderer
         Console.ResetColor();
     }
 
-    public void DrawSortMatch(List<StatisticsObject> allGamesStatistics, bool sortNewestFirst)
+    public List<StatisticsObject> DrawSortMatch(List<StatisticsObject> allGamesStatistics, bool sortNewestFirst)
     {
         if (sortNewestFirst)
         {
@@ -215,6 +215,8 @@ public class ConsoleRender : IBoardRenderer
             {
                 DrawMatch(allGamesStatistics[i]);
             }
+            
+            allGamesStatistics.Reverse();
         }
         else
         {
@@ -223,6 +225,8 @@ public class ConsoleRender : IBoardRenderer
                 DrawMatch(allGamesStatistics[i]);
             }
         }
+        
+        return allGamesStatistics;
     }
     
     public void DrawMatch(StatisticsObject match)
