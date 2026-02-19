@@ -1,4 +1,4 @@
-namespace Lab.UI;
+namespace Lab;
 class Menu
 {
     public int ShowMenu(string[] options)

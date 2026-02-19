@@ -106,6 +106,12 @@ public class ConsoleRender : IBoardRenderer
         StatisticsManager statisticsManager = new StatisticsManager();
         List<StatisticsObject>? allGamesStatistics = statisticsManager.DeserializeStatistics();
 
+        StatisticsCollection collection = new StatisticsCollection();
+        for (int i = 0; i < allGamesStatistics.Count; i++)
+        {
+            collection.Add(allGamesStatistics[i]);
+        }
+
         bool toggle = true;
         bool stayInMenu = true;
         while (stayInMenu)
@@ -124,7 +130,8 @@ public class ConsoleRender : IBoardRenderer
                 return;
             }
 
-            DrawSortMatch(allGamesStatistics, toggle);
+            NewDrawSortMatch(collection, toggle);
+            // DrawSortMatch(allGamesStatistics, toggle);
             
             ShowStatisticsMenu();
             ShowStatisticsSortMenu(toggle);
@@ -228,7 +235,29 @@ public class ConsoleRender : IBoardRenderer
         
         return allGamesStatistics;
     }
-    
+
+    public void NewDrawSortMatch (StatisticsCollection collection, bool sortNewestFirst)
+    {
+        var it = collection.GetEnumerator();
+
+        if (sortNewestFirst)
+        {
+            for (int i = collection.Count() - 1; i >= 0; i--)
+            {
+                var item = collection.GetAt(i);
+                DrawMatch(item);
+            }             
+        }   
+        else
+        {
+            while (it.MoveNext())
+            {
+                var item = it.Current;
+                DrawMatch((StatisticsObject)item);
+            }
+        }
+    }   
+
     public void DrawMatch(StatisticsObject match)
     {
         Console.Write($"\n{match.PlayerOneName} (");
@@ -246,4 +275,3 @@ public class ConsoleRender : IBoardRenderer
         Console.WriteLine($"Draws: {match.DrawsCount}");
     }
 }
-
