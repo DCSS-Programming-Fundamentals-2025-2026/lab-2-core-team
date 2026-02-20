@@ -105,15 +105,20 @@ public class ConsoleRender : IBoardRenderer
         InputHandler inputHandler = new InputHandler();
         StatisticsManager statisticsManager = new StatisticsManager();
         List<StatisticsObject>? allGamesStatistics = statisticsManager.DeserializeStatistics();
-
+        
         StatisticsCollection collection = new StatisticsCollection();
-        for (int i = 0; i < allGamesStatistics.Count; i++)
+        
+        if (allGamesStatistics != null)
         {
-            collection.Add(allGamesStatistics[i]);
+            for (int i = 0; i < allGamesStatistics.Count; i++)
+            {
+                collection.Add(allGamesStatistics[i]);
+            }
         }
 
-        bool toggle = true;
         bool stayInMenu = true;
+        int sortMode = 0; 
+
         while (stayInMenu)
         {
             Console.Clear();
@@ -121,24 +126,59 @@ public class ConsoleRender : IBoardRenderer
             Console.WriteLine("                     Match History");
             Console.ResetColor();
 
-            if (allGamesStatistics is null)
+            if (allGamesStatistics is null || collection.Count() == 0)
             {
-                Console.Clear();
-                Console.WriteLine("No games played yet.");
-                Console.WriteLine("\n\nPress any key to return to the menu...");
+                Console.WriteLine("\nNo games played yet.");
+                Console.WriteLine("\nPress any key to return...");
                 Console.ReadKey();
                 return;
             }
 
-            NewDrawSortMatch(collection, toggle);
-            // DrawSortMatch(allGamesStatistics, toggle);
-            
-            ShowStatisticsMenu();
-            ShowStatisticsSortMenu(toggle);
-            stayInMenu = inputHandler.StatisticsMenu(ref toggle);
+            if (sortMode == 1)
+            {
+                collection.Sort();
+            }
+            else if (sortMode == 2) 
+            {
+                collection.Sort(new Lab.Domain.Core.StatisticsLogic.Comparers.XComparer());
+            }
 
-            allGamesStatistics = statisticsManager.DeserializeStatistics();
+            NewDrawSortMatch(collection, sortMode == 0);
+            
+            Console.WriteLine("\n[Enter] - Delete statistics | [Escape] - Back to menu");
+            ShowStatisticsSortMenu(sortMode); 
+
+            ConsoleKey key = Console.ReadKey(true).Key;
+            switch (key)
+            {
+                case ConsoleKey.Escape:
+                    stayInMenu = false;
+                    break;
+                case ConsoleKey.Enter:
+                    statisticsManager.DeleteStatistics();
+                    allGamesStatistics = null; 
+                    collection = new StatisticsCollection();
+                    break;
+                case ConsoleKey.Spacebar:
+                    sortMode++;
+                    if (sortMode > 2) sortMode = 0;
+                    break;
+            }
         }
+    }
+
+    public void ShowStatisticsSortMenu(int currentMode)
+    {
+        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+        Console.Write("[Spacebar] - Change Sort Mode: ");
+        
+        Console.ForegroundColor = ConsoleColor.White;
+        if (currentMode == 0) Console.Write("Time (Default)");
+        else if (currentMode == 1) Console.Write("Names (A-Z)");
+        else if (currentMode == 2) Console.Write("X Wins (Low-High)");
+        
+        Console.ResetColor();
+        Console.WriteLine();
     }
 
     public void RenderWin(IBoardRenderer renderer, char[] board, PlayerBase player1, PlayerBase player2, int[] score, char sideThatWon, out bool winHappenedFlag)

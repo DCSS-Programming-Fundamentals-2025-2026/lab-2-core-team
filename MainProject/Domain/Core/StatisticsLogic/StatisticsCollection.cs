@@ -74,6 +74,16 @@ public class StatisticsCollection : IEnumerable
     {
         return new StatisticsObjectEnumerator(items, counter);
     }
+    
+    public void Sort()
+    {
+        Array.Sort(items, 0, counter);
+    }
+
+    public void Sort(IComparer comparer)
+    {
+        Array.Sort(items, 0, counter, comparer);
+    }
 }
 
 public class StatisticsObjectEnumerator : IEnumerator
